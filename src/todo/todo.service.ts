@@ -1,6 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult } from 'typeorm';
+import { IsNull, Repository, UpdateResult } from 'typeorm';
 import { omit } from 'lodash';
 import { TodoEntity } from './entity/todo.entity';
 import { CreateTodoDto } from './dto/todo.create-dto';
@@ -15,6 +19,12 @@ export class TodoService {
 
   async findAll(): Promise<TodoEntity[]> {
     return this.todoRepository.find();
+  }
+
+  async findRootTodos(): Promise<TodoEntity[]> {
+    return this.todoRepository.find({
+      where: { parentId: IsNull() },
+    });
   }
 
   async findTodoById(id: number): Promise<TodoEntity> {
@@ -47,6 +57,9 @@ export class TodoService {
   }
 
   async createTodo(data: CreateTodoDto): Promise<TodoEntity> {
+    if (!data.title)
+      throw new UnprocessableEntityException('Title is required');
+
     const savedTodo = await this.todoRepository.save(data);
 
     if (data.parentId) {
@@ -64,8 +77,8 @@ export class TodoService {
     return savedTodo;
   }
 
-  async updateTodo(id: number, data: UpdateTodoDto): Promise<UpdateResult> {
-    return await this.todoRepository.update(id, {
+  async updateTodo(id: number, data: UpdateTodoDto): Promise<void> {
+    await this.todoRepository.update(id, {
       ...data,
       updatedAt: new Date(),
     });
@@ -78,7 +91,7 @@ export class TodoService {
 
     if (!selectedTodo.children.length) {
       await this.todoRepository.delete(todoId);
-      return;
+      // return;
     } else {
       for (const childId of selectedTodo.children) {
         await this.removeChildTodo(selectedTodo, childId as number);

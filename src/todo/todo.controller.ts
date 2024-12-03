@@ -11,13 +11,17 @@ import { TodoService } from './todo.service';
 import { TodoEntity } from './entity/todo.entity';
 import { CreateTodoDto } from './dto/todo.create-dto';
 import { UpdateTodoDto } from './dto/todo.update-dto';
-import { UpdateResult } from 'typeorm';
 
 @Controller('todos')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
   @Get()
+  findRootTodos(): Promise<TodoEntity[]> {
+    return this.todoService.findRootTodos();
+  }
+
+  @Get('/all')
   findAllTodos(): Promise<TodoEntity[]> {
     return this.todoService.findAll();
   }
@@ -36,7 +40,7 @@ export class TodoController {
   updateTodo(
     @Param('todoId') todoId: number,
     @Body() data: UpdateTodoDto,
-  ): Promise<UpdateResult> {
+  ): Promise<void> {
     return this.todoService.updateTodo(todoId, data);
   }
 

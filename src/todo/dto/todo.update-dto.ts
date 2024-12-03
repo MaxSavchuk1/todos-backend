@@ -5,11 +5,15 @@ import { TodoEntity, TodoStatus } from '../entity/todo.entity';
 export class UpdateTodoDto extends CreateTodoDto {
   @IsOptional()
   @IsString()
-  readonly status: TodoStatus;
+  readonly title: string;
 
   @IsOptional()
   @IsString()
   readonly body: string;
+
+  @IsOptional()
+  @IsString()
+  readonly status: TodoStatus;
 
   @IsOptional()
   @IsArray()

@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum TodoStatus {
   NEW = 'new',
-  WORKING = 'working',
+  IN_PROCESS = 'in process',
   TESTING = 'testing',
   DONE = 'done',
 }
@@ -13,6 +13,9 @@ export class TodoEntity {
   id: number;
 
   @Column()
+  title: string;
+
+  @Column({ nullable: true })
   body: string;
 
   @Column({ default: TodoStatus.NEW })
