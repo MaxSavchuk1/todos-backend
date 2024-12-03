@@ -88,6 +88,7 @@ export class TodoService {
     }
   }
 
+  // if child todo is deleted, remove it from parent
   async removeChildTodo(
     currentTodo: TodoEntity,
     childTodoId: number,
