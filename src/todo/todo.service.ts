@@ -79,7 +79,7 @@ export class TodoService {
   }
 
   async updateTodo(id: number, data: UpdateTodoDto): Promise<void> {
-    if (data.status && !STATUSES.includes(data.status))
+    if (!STATUSES.includes(data?.status))
       throw new UnprocessableEntityException(
         `Invalid status. Available: ${STATUSES.join(', ')}`,
       );
