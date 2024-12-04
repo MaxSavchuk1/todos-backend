@@ -10,6 +10,8 @@ import { TodoEntity } from './entity/todo.entity';
 import { CreateTodoDto } from './dto/todo.create-dto';
 import { UpdateTodoDto } from './dto/todo.update-dto';
 
+const STATUSES = ['new', 'in process', 'testing', 'done']; // TODO: move to constants
+
 @Injectable()
 export class TodoService {
   constructor(
@@ -69,7 +71,6 @@ export class TodoService {
       if (parent) {
         await this.todoRepository.update(data.parentId, {
           children: [...parent.children, savedTodo.id],
-          updatedAt: new Date(),
         });
       }
     }
@@ -78,10 +79,12 @@ export class TodoService {
   }
 
   async updateTodo(id: number, data: UpdateTodoDto): Promise<void> {
-    await this.todoRepository.update(id, {
-      ...data,
-      updatedAt: new Date(),
-    });
+    if (data.status && !STATUSES.includes(data.status))
+      throw new UnprocessableEntityException(
+        `Invalid status. Available: ${STATUSES.join(', ')}`,
+      );
+
+    await this.todoRepository.update(id, data);
   }
 
   async removeTodoById(todoId: number): Promise<void> {
@@ -91,7 +94,6 @@ export class TodoService {
 
     if (!selectedTodo.children.length) {
       await this.todoRepository.delete(todoId);
-      // return;
     } else {
       for (const childId of selectedTodo.children) {
         await this.removeChildTodo(selectedTodo, childId as number);
@@ -109,7 +111,6 @@ export class TodoService {
     return this.todoRepository.update(currentTodo.id, {
       ...omit(currentTodo, 'id'),
       children: currentTodo.children.filter((id) => id !== childTodoId),
-      updatedAt: new Date(),
     });
   }
 }
