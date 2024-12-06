@@ -30,9 +30,7 @@ export class TodoService {
   }
 
   async findTodoById(id: number): Promise<TodoEntity> {
-    return await this.todoRepository.findOne({
-      where: { id },
-    });
+    return await this.todoRepository.findOneBy({ id });
   }
 
   async findTodoByIdWithChildren(id: number): Promise<TodoEntity> {
@@ -44,8 +42,8 @@ export class TodoService {
       selectedTodo.children = (
         await Promise.all(
           selectedTodo.children.map(async (childId: any) => {
-            const foundTodo = await this.todoRepository.findOne({
-              where: { id: childId },
+            const foundTodo = await this.todoRepository.findOneBy({
+              id: childId,
             });
             if (!foundTodo) {
               await this.removeChildTodo(selectedTodo, childId);

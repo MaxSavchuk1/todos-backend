@@ -4,7 +4,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from 'typeorm';
+import { UserEntity } from '../../user/entity/user.entity';
 
 export enum TodoStatus {
   NEW = 'new',
@@ -13,7 +15,7 @@ export enum TodoStatus {
   DONE = 'done',
 }
 
-@Entity({ name: 'todo' })
+@Entity({ name: 'todos' })
 export class TodoEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -32,6 +34,9 @@ export class TodoEntity {
 
   @Column({ nullable: true })
   parentId: number;
+
+  @ManyToOne(() => UserEntity, (user) => user.todos)
+  user: UserEntity;
 
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;

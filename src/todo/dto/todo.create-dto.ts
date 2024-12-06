@@ -11,4 +11,7 @@ export class CreateTodoDto {
   @IsOptional()
   @IsNumber()
   readonly parentId: number;
+
+  @IsNumber()
+  readonly userId: number;
 }
