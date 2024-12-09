@@ -40,8 +40,12 @@ export class TodoController {
 
   @UseGuards(JwtAuthGuard)
   @Post('/create')
-  createTodo(@Body() data: CreateTodoDto): Promise<TodoEntity> {
-    return this.todoService.createTodo(data);
+  createTodo(
+    @Body() data: CreateTodoDto,
+    @Request() req: any,
+  ): Promise<TodoEntity> {
+    const { id: userId } = req.user;
+    return this.todoService.createTodo(data, userId);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -49,13 +53,19 @@ export class TodoController {
   updateTodo(
     @Param('todoId') todoId: number,
     @Body() data: UpdateTodoDto,
+    @Request() req: any,
   ): Promise<void> {
-    return this.todoService.updateTodo(todoId, data);
+    const { id: userId } = req.user;
+    return this.todoService.updateTodo(todoId, userId, data);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('/:todoId')
-  removeTodo(@Param('todoId') todoId: number): Promise<void> {
-    return this.todoService.removeTodoById(todoId);
+  removeTodo(
+    @Param('todoId') todoId: number,
+    @Request() req: any,
+  ): Promise<void> {
+    const { id: userId } = req.user;
+    return this.todoService.removeTodoById(todoId, userId);
   }
 }

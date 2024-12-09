@@ -30,7 +30,9 @@ export class TodoService {
   }
 
   async findTodoById(id: number): Promise<TodoEntity> {
-    return await this.todoRepository.findOneBy({ id });
+    return await this.todoRepository.findOne({
+      where: { id },
+    });
   }
 
   async findTodoByIdWithChildren(id: number): Promise<TodoEntity> {
@@ -56,14 +58,14 @@ export class TodoService {
     return selectedTodo;
   }
 
-  async createTodo(data: CreateTodoDto): Promise<TodoEntity> {
+  async createTodo(data: CreateTodoDto, userId: number): Promise<TodoEntity> {
     if (!data.title)
       throw new UnprocessableEntityException('Title is required');
 
-    if (!data.userId)
-      throw new UnprocessableEntityException('User ID is required');
-
-    const savedTodo = await this.todoRepository.save(data);
+    const savedTodo = await this.todoRepository.save({
+      ...data,
+      user: { id: userId },
+    });
 
     if (data.parentId) {
       const parent = await this.todoRepository.findOne({
@@ -79,7 +81,16 @@ export class TodoService {
     return savedTodo;
   }
 
-  async updateTodo(id: number, data: UpdateTodoDto): Promise<void> {
+  async updateTodo(
+    id: number,
+    userId: number,
+    data: UpdateTodoDto,
+  ): Promise<void> {
+    const currentTodo: TodoEntity = await this.todoRepository.findOne({
+      where: { id, user: { id: userId } },
+    });
+    if (!currentTodo) throw new NotFoundException();
+
     if (!STATUSES.includes(data?.status))
       throw new UnprocessableEntityException(
         `Invalid status. Available: ${STATUSES.join(', ')}`,
@@ -88,17 +99,18 @@ export class TodoService {
     await this.todoRepository.update(id, data);
   }
 
-  async removeTodoById(todoId: number): Promise<void> {
-    const selectedTodo: TodoEntity = await this.findTodoById(todoId);
-    if (!selectedTodo)
-      throw new NotFoundException(`there is no todo with ID ${todoId}`);
+  async removeTodoById(todoId: number, userId: number): Promise<void> {
+    const selectedTodo: TodoEntity = await this.todoRepository.findOne({
+      where: { id: todoId, user: { id: userId } },
+    });
+    if (!selectedTodo) throw new NotFoundException();
 
     if (!selectedTodo.children.length) {
       await this.todoRepository.delete(todoId);
     } else {
       for (const childId of selectedTodo.children) {
         await this.removeChildTodo(selectedTodo, childId as number);
-        await this.removeTodoById(childId as number);
+        await this.removeTodoById(childId as number, userId);
         await this.todoRepository.delete(todoId);
       }
     }
