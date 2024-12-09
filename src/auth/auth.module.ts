@@ -8,12 +8,12 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { AuthController } from './auth.controller';
 import { AuthRefreshTokenService } from './auth-refresh-token.service';
 import { AuthService } from './auth.service';
-import { AuthRefreshToken } from './entity/auth-refresh-token.entity';
+import { AuthRefreshTokenEntity } from './entity/auth-refresh-token.entity';
 import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([AuthRefreshToken]),
+    TypeOrmModule.forFeature([AuthRefreshTokenEntity]),
     UserModule,
     JwtModule.registerAsync({
       inject: [ConfigService],

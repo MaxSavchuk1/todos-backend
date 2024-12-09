@@ -35,7 +35,7 @@ export class TodoEntity {
   @Column({ nullable: true })
   parentId: number;
 
-  @ManyToOne(() => UserEntity, (user) => user.todos)
+  @ManyToOne(() => UserEntity, (user) => user.todos, { onDelete: 'CASCADE' })
   user: UserEntity;
 
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })

@@ -1,6 +1,7 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateTodoDto {
+  @IsNotEmpty()
   @IsString()
   readonly title: string;
 
@@ -12,6 +13,7 @@ export class CreateTodoDto {
   @IsNumber()
   readonly parentId: number;
 
+  @IsNotEmpty()
   @IsNumber()
   readonly userId: number;
 }

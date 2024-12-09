@@ -16,13 +16,10 @@ export class AuthService {
     password: string,
   ): Promise<UserEntity | null> {
     const user = await this.userService.findOneByEmail(email);
-
     if (!user) {
       return null;
     }
-
     const isMatch = await Hash.compare(password, user.password);
-    console.log('isMatch', isMatch);
     if (isMatch) {
       return user;
     }

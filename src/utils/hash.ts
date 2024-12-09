@@ -1,8 +1,6 @@
 import * as bcrypt from 'bcrypt';
 
 export default class Hash {
-  // static readonly saltRounds = 11;
-
   public static async make(password: string) {
     const salt = await bcrypt.genSalt();
     console.log('passwordsss', String(password));
@@ -15,8 +13,6 @@ export default class Hash {
     password: string,
     hash: string,
   ): Promise<boolean> {
-    // console.log('password', password);
-    // hash = hash.replace(/^\$2y(.+)$/i, '$2a$1');
     return bcrypt.compare(password, hash);
   }
 

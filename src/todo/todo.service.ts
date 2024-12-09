@@ -23,9 +23,9 @@ export class TodoService {
     return this.todoRepository.find();
   }
 
-  async findRootTodos(): Promise<TodoEntity[]> {
+  async findRootTodos(userId: number): Promise<TodoEntity[]> {
     return this.todoRepository.find({
-      where: { parentId: IsNull() },
+      where: { parentId: IsNull(), user: { id: userId } },
     });
   }
 
@@ -59,6 +59,9 @@ export class TodoService {
   async createTodo(data: CreateTodoDto): Promise<TodoEntity> {
     if (!data.title)
       throw new UnprocessableEntityException('Title is required');
+
+    if (!data.userId)
+      throw new UnprocessableEntityException('User ID is required');
 
     const savedTodo = await this.todoRepository.save(data);
 

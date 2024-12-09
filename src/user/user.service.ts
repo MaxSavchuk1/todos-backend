@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { UserEntity } from './entity/user.entity';
 import { CreateUserDto } from './dto/user.create-dto';
 import { UpdateUserDto } from './dto/user.update-dto';
-// import Hash from 'src/utils/hash';
 
 @Injectable()
 export class UserService {
@@ -15,12 +14,17 @@ export class UserService {
 
   async create(userDto: CreateUserDto) {
     const user = this.userRepository.create(userDto);
-
+    // ...
     return await this.userRepository.save(user);
   }
 
   async findOneById(id: number): Promise<UserEntity | null> {
-    return await this.userRepository.findOneBy({ id });
+    return await this.userRepository.findOne({
+      where: { id },
+      relations: {
+        todos: true,
+      },
+    });
   }
 
   async findOneByEmail(email: string): Promise<UserEntity | null> {

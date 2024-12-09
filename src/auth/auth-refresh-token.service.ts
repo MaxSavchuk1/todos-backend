@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { LessThanOrEqual, Repository } from 'typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { ConfigService } from '@nestjs/config';
-import { AuthRefreshToken } from './entity/auth-refresh-token.entity';
+import { AuthRefreshTokenEntity } from './entity/auth-refresh-token.entity';
 import { UserEntity } from '../user/entity/user.entity';
 
 @Injectable()
@@ -12,8 +12,8 @@ export class AuthRefreshTokenService {
   constructor(
     private jwtService: JwtService,
     private configService: ConfigService,
-    @InjectRepository(AuthRefreshToken)
-    private authRefreshTokenRepository: Repository<AuthRefreshToken>,
+    @InjectRepository(AuthRefreshTokenEntity)
+    private authRefreshTokenRepository: Repository<AuthRefreshTokenEntity>,
   ) {}
 
   async generateRefreshToken(

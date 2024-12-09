@@ -12,6 +12,7 @@ import {
 import { Exclude } from 'class-transformer';
 import Hash from '../../utils/hash';
 import { TodoEntity } from '../../todo/entity/todo.entity';
+import { AuthRefreshTokenEntity } from 'src/auth/entity/auth-refresh-token.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -47,8 +48,15 @@ export class UserEntity {
     }
   }
 
-  @OneToMany(() => TodoEntity, (todo) => todo.user)
+  @OneToMany(() => TodoEntity, (todo) => todo.user, {
+    cascade: true,
+  })
   todos: TodoEntity[];
+
+  @OneToMany(() => AuthRefreshTokenEntity, (token) => token.userId, {
+    cascade: true,
+  })
+  tokens: AuthRefreshTokenEntity[];
 
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;

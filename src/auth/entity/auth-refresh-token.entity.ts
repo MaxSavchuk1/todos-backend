@@ -2,17 +2,17 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { UserEntity } from 'src/user/entity/user.entity';
 
 @Entity({ name: 'auth_refresh_tokens' })
-export class AuthRefreshToken {
-  @PrimaryColumn({ name: 'refresh_token' })
+export class AuthRefreshTokenEntity {
+  @PrimaryColumn()
   refreshToken: string;
 
-  @Column({ name: 'expires_at' })
+  @Column()
   expiresAt: Date;
 
-  @Column({ name: 'user_id' })
+  @Column({ name: 'userId' })
   userId: number;
 
   @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'userId' })
   user: UserEntity;
 }
