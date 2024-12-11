@@ -15,7 +15,7 @@ export class UserService {
   async create(userDto: CreateUserDto) {
     const user = this.userRepository.create(userDto);
     // ...
-    return await this.userRepository.save(user);
+    await this.userRepository.save(user);
   }
 
   async findOneById(id: number): Promise<UserEntity | null> {
@@ -32,7 +32,7 @@ export class UserService {
   }
 
   async update(id: number, data: UpdateUserDto) {
-    return this.userRepository.update(id, data);
+    await this.userRepository.update(id, data);
   }
 
   async remove(id: number) {

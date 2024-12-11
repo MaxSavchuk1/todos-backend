@@ -11,7 +11,7 @@ export class CreateUserDto {
 
   @Transform(({ value }) => value?.toLowerCase().trim())
   @IsNotEmpty()
-  @Validate(IsNotExist, ['User'], {
+  @Validate(IsNotExist, ['UserEntity'], {
     message: 'The email is already exists',
   })
   @IsEmail()

@@ -11,7 +11,7 @@ export class UpdateUserDto {
 
   @Transform(({ value }) => value?.toLowerCase().trim())
   @IsOptional()
-  @Validate(IsNotExist, ['User'], {
+  @Validate(IsNotExist, ['UserEntity'], {
     message: 'The email is already exists',
   })
   @IsEmail()

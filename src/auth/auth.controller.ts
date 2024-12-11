@@ -1,23 +1,20 @@
 import {
-  ClassSerializerInterceptor,
   Controller,
   Get,
   InternalServerErrorException,
   Post,
   Request,
-  Res,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
-import { Response, Request as ExpressRequest } from 'express';
+import { Request as ExpressRequest } from 'express';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtRefreshAuthGuard } from './guards/jwt-refresh-auth.guard';
 import { AuthRefreshTokenService } from './auth-refresh-token.service';
-import { User } from './decorators/user.decorator';
-import { UserEntity } from 'src/user/entity/user.entity';
+// import { UserEntity } from 'src/user/entity/user.entity';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -38,13 +35,9 @@ export class AuthController {
   }
 
   @Get('me')
-  @UseInterceptors(ClassSerializerInterceptor)
-  async me(
-    @User() authUser: UserEntity,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    res.header('Cache-Control', 'no-store');
-    return authUser;
+  @UseGuards(JwtAuthGuard)
+  async me(@Request() req: any) {
+    return await this.authenticationService.me(req.user);
   }
 
   @Throttle({

@@ -37,13 +37,14 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(
+    @Request() req: any,
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-    @Request() req: any,
   ) {
     if (+id !== req.user?.id) {
       throw new ForbiddenException();
     }
+    // console.log(req.user);
     return this.userService.update(+id, updateUserDto);
   }
 }

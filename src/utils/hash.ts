@@ -3,9 +3,7 @@ import * as bcrypt from 'bcrypt';
 export default class Hash {
   public static async make(password: string) {
     const salt = await bcrypt.genSalt();
-    console.log('passwordsss', String(password));
     const res = await bcrypt.hash(String(password), salt);
-    console.log('res', res);
     return res;
   }
 

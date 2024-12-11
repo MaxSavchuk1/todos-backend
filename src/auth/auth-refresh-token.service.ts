@@ -25,7 +25,7 @@ export class AuthRefreshTokenService {
       { sub: authUserId },
       {
         secret: this.configService.get('auth.jwtRefreshSecret'),
-        expiresIn: '30d',
+        expiresIn: '1d',
       },
     );
 
@@ -58,7 +58,7 @@ export class AuthRefreshTokenService {
     const payload = { email: user.email, sub: user.id };
 
     return {
-      access_token: this.jwtService.sign(payload), // jwt module is configured in auth.module.ts for access token
+      access_token: this.jwtService.sign(payload),
       refresh_token: await this.generateRefreshToken(
         user.id,
         currentRefreshToken,
