@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { pick } from 'lodash';
 import { UserService } from '../user/user.service';
 import { UserEntity } from '../user/entity/user.entity';
 import { AuthRefreshTokenService } from './auth-refresh-token.service';
@@ -31,8 +30,8 @@ export class AuthService {
     return this.authRefreshTokenService.generateTokenPair(user);
   }
 
-  async me({ id }) {
+  async me({ id }): Promise<UserEntity | null> {
     const foundUser = await this.userService.findOneById(id);
-    return pick(foundUser, ['id', 'email', 'firstName', 'lastName']);
+    return foundUser;
   }
 }

@@ -1,10 +1,14 @@
 import {
+  ClassSerializerInterceptor,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   InternalServerErrorException,
   Post,
   Request,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { Request as ExpressRequest } from 'express';
@@ -13,7 +17,6 @@ import { Public } from './decorators/public.decorator';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtRefreshAuthGuard } from './guards/jwt-refresh-auth.guard';
 import { AuthRefreshTokenService } from './auth-refresh-token.service';
-// import { UserEntity } from 'src/user/entity/user.entity';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
@@ -30,12 +33,14 @@ export class AuthController {
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
+  @HttpCode(HttpStatus.OK)
   async login(@Request() req: any) {
     return await this.authenticationService.login(req.user);
   }
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
   async me(@Request() req: any) {
     return await this.authenticationService.me(req.user);
   }

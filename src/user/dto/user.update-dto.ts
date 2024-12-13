@@ -1,6 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsEmail, IsOptional, Validate } from 'class-validator';
 import { IsNotExist } from '../../utils/validators/is-not-exists.validator';
+import { Role } from 'src/authorization/enums/role.enum';
 
 export class UpdateUserDto {
   @IsOptional()
@@ -16,4 +17,8 @@ export class UpdateUserDto {
   })
   @IsEmail()
   email: string;
+
+  // TDOD: only admins can update roles and validate roles
+  @IsOptional()
+  roles: Role[];
 }
