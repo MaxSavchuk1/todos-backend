@@ -25,7 +25,7 @@ export class AuthRefreshTokenService {
       { sub: authUserId },
       {
         secret: this.configService.get('auth.jwtRefreshSecret'),
-        expiresIn: '1d',
+        expiresIn: this.configService.get('auth.jwtRefreshExpires'),
       },
     );
 

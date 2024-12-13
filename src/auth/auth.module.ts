@@ -19,7 +19,7 @@ import { UserModule } from '../user/user.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get('auth.jwtSecret'),
-        signOptions: { expiresIn: '30m' },
+        signOptions: { expiresIn: configService.get('auth.jwtExpires') },
       }),
     }),
   ],
