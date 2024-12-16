@@ -35,12 +35,10 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @Roles(Role.Admin)
   @Get('/:id')
   @UseInterceptors(ClassSerializerInterceptor)
-  findOne(@Param('id') id: string /*, @Request() req: any */) {
-    // if (+id !== req.user?.id) {
-    //   throw new ForbiddenException();
-    // }
+  findOne(@Param('id') id: string) {
     return this.userService.findOneById(+id);
   }
 
@@ -51,7 +49,6 @@ export class UserController {
     return this.userService.findAll(findDto);
   }
 
-  // @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(
     @Request() req: any,

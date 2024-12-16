@@ -11,6 +11,7 @@ import databaseConfig from './config/database.config';
 import authConfig from './config/auth.config';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './authorization/guards/roles.guard';
+import { AuthorizationModule } from './authorization/authorization.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { RolesGuard } from './authorization/guards/roles.guard';
     TodoModule,
     AuthModule,
     UserModule,
+    AuthorizationModule,
   ],
   controllers: [],
   providers: [

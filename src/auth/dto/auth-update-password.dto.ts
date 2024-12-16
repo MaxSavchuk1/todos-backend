@@ -1,4 +1,4 @@
-import { IsConfirmed } from 'src/utils/validators/is-confirmed.decorator';
+import { IsConfirmed } from 'src/auth/decorators/is-confirmed.decorator';
 import { IsNotEmpty, MaxLength, MinLength } from 'class-validator';
 import { IsNotEqualTo } from 'src/utils/validators/is-not-equal.decorator';
 
