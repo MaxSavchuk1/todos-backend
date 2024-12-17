@@ -32,6 +32,7 @@ export class TodoController {
     return this.todoService.findAll();
   }
 
+  @Roles(Role.User)
   @Get('/:todoId')
   findOneTodo(@Param('todoId') todoId: number): Promise<TodoEntity> {
     return this.todoService.findTodoByIdWithChildren(todoId);
