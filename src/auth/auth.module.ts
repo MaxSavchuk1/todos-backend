@@ -10,16 +10,18 @@ import { AuthRefreshTokenService } from './auth-refresh-token.service';
 import { AuthService } from './auth.service';
 import { AuthRefreshTokenEntity } from './entity/auth-refresh-token.entity';
 import { UserModule } from '../user/user.module';
+import { UserEntity } from 'src/user/entity/user.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([AuthRefreshTokenEntity]),
+    TypeOrmModule.forFeature([UserEntity]),
     UserModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get('auth.jwtSecret'),
-        signOptions: { expiresIn: '30m' },
+        signOptions: { expiresIn: configService.get('auth.jwtExpires') },
       }),
     }),
   ],

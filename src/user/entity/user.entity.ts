@@ -13,6 +13,7 @@ import { Exclude } from 'class-transformer';
 import Hash from '../../utils/hash';
 import { TodoEntity } from '../../todo/entity/todo.entity';
 import { AuthRefreshTokenEntity } from 'src/auth/entity/auth-refresh-token.entity';
+import { Role } from 'src/authorization/enums/role.enum';
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -58,9 +59,13 @@ export class UserEntity {
   })
   tokens: AuthRefreshTokenEntity[];
 
+  @Column({ type: 'character varying', array: true, default: [Role.User] })
+  roles: Role[];
+
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
+  @Exclude()
   @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 }

@@ -1,20 +1,24 @@
 import {
+  Body,
+  ClassSerializerInterceptor,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   InternalServerErrorException,
   Post,
+  Put,
   Request,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
-import { Request as ExpressRequest } from 'express';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtRefreshAuthGuard } from './guards/jwt-refresh-auth.guard';
 import { AuthRefreshTokenService } from './auth-refresh-token.service';
-// import { UserEntity } from 'src/user/entity/user.entity';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { AuthUpdatePasswordDto } from './dto/auth-update-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -30,12 +34,13 @@ export class AuthController {
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
+  @HttpCode(HttpStatus.OK)
   async login(@Request() req: any) {
     return await this.authenticationService.login(req.user);
   }
 
   @Get('me')
-  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
   async me(@Request() req: any) {
     return await this.authenticationService.me(req.user);
   }
@@ -47,14 +52,26 @@ export class AuthController {
   @Public()
   @UseGuards(JwtRefreshAuthGuard)
   @Post('refresh-tokens')
-  refreshTokens(@Request() req: ExpressRequest) {
+  refreshTokens(@Request() req: any) {
     if (!req.user) {
       throw new InternalServerErrorException();
     }
     return this.authRefreshTokenService.generateTokenPair(
-      (req.user as any).attributes,
+      req.user.attributes,
       req.headers.authorization?.split(' ')[1],
-      (req.user as any).refreshTokenExpiresAt,
+      req.user.refreshTokenExpiresAt,
+    );
+  }
+
+  @Put('password')
+  @HttpCode(HttpStatus.OK)
+  updatePassword(
+    @Request() req,
+    @Body() authUpdatePasswordDto: AuthUpdatePasswordDto,
+  ) {
+    return this.authenticationService.updatePassword(
+      req.user,
+      authUpdatePasswordDto,
     );
   }
 }

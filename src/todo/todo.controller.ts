@@ -7,38 +7,38 @@ import {
   Patch,
   Post,
   Request,
-  UseGuards,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { TodoEntity } from './entity/todo.entity';
 import { CreateTodoDto } from './dto/todo.create-dto';
 import { UpdateTodoDto } from './dto/todo.update-dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Roles } from 'src/authorization/decorators/roles.decorator';
+import { Role } from 'src/authorization/enums/role.enum';
 
 @Controller('todos')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.User)
   @Get()
   findRootTodos(@Request() req: any): Promise<TodoEntity[]> {
     const { id: userId } = req.user;
     return this.todoService.findRootTodos(userId);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.User)
   @Get('/all')
   findAllTodos(): Promise<TodoEntity[]> {
     return this.todoService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.User)
   @Get('/:todoId')
   findOneTodo(@Param('todoId') todoId: number): Promise<TodoEntity> {
     return this.todoService.findTodoByIdWithChildren(todoId);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.User)
   @Post('/create')
   createTodo(
     @Body() data: CreateTodoDto,
@@ -48,7 +48,7 @@ export class TodoController {
     return this.todoService.createTodo(data, userId);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.User)
   @Patch('/:todoId')
   updateTodo(
     @Param('todoId') todoId: number,
@@ -59,7 +59,7 @@ export class TodoController {
     return this.todoService.updateTodo(todoId, userId, data);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.User)
   @Delete('/:todoId')
   removeTodo(
     @Param('todoId') todoId: number,

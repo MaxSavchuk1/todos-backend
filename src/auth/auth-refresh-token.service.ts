@@ -25,7 +25,7 @@ export class AuthRefreshTokenService {
       { sub: authUserId },
       {
         secret: this.configService.get('auth.jwtRefreshSecret'),
-        expiresIn: '1d',
+        expiresIn: this.configService.get('auth.jwtRefreshExpires'),
       },
     );
 
@@ -55,7 +55,7 @@ export class AuthRefreshTokenService {
     currentRefreshToken?: string,
     currentRefreshTokenExpiresAt?: Date,
   ) {
-    const payload = { email: user.email, sub: user.id };
+    const payload = { email: user.email, sub: user.id, roles: user.roles };
 
     return {
       access_token: this.jwtService.sign(payload),
