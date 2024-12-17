@@ -1,28 +1,20 @@
-import {
-  ArrayNotEmpty,
-  IsNotEmpty,
-  IsOptional,
-  Validate,
-} from 'class-validator';
+import { IsNotEmpty, Validate } from 'class-validator';
 import { Role } from 'src/authorization/enums/role.enum';
 import { IsRoleExist } from '../decorators/is-role-exist.decorator';
 import { CheckAdminCount } from '../validators/check-admin-count.validator';
 import { IsExist } from 'src/utils/validators/is-exists.validator';
 
-export class UpdateRolesDto {
+export class RemoveRoleDto {
   @IsNotEmpty()
   @Validate(IsExist, ['UserEntity', 'id'], {
     message: 'The user does not exist',
   })
-  id: number;
+  userId: number;
 
-  @IsOptional()
-  @ArrayNotEmpty({
-    message: 'At least one role must be selected',
-  })
+  @IsNotEmpty()
   @IsRoleExist()
   @Validate(CheckAdminCount, ['UserEntity'], {
     message: 'At least one admin must exist',
   })
-  roles: Role[];
+  role: Role;
 }

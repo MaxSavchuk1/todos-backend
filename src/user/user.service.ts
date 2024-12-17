@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from './entity/user.entity';
 import { CreateUserDto } from './dto/user.create-dto';
 import { UpdateUserDto } from './dto/user.update-dto';
 import { FindDto } from 'src/utils/find.dto';
+import { Role } from 'src/authorization/enums/role.enum';
 
 @Injectable()
 export class UserService {
@@ -47,7 +48,10 @@ export class UserService {
     };
   }
 
-  async update(id: number, data: UpdateUserDto) {
+  async update(id: number, data: UpdateUserDto, req: any) {
+    if (req.user?.id !== id && !req.user?.roles.includes(Role.Admin)) {
+      throw new ForbiddenException('Only admins can update other users');
+    }
     await this.userRepository.update(id, data);
   }
 

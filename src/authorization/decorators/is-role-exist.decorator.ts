@@ -26,12 +26,10 @@ export function IsRoleExist(
 
 @ValidatorConstraint({ name: 'IsRoleExist' })
 export class IsRoleExistConstraint implements ValidatorConstraintInterface {
-  async validate(value: string[]) {
+  async validate(value: string) {
     const availableRoles = Object.values(Role) as string[];
-    for (const role of value) {
-      if (!availableRoles.includes(role)) {
-        return false;
-      }
+    if (value && !availableRoles.includes(value)) {
+      return false;
     }
     return true;
   }

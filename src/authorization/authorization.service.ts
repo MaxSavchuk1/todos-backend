@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { omit } from 'lodash';
 import { UserEntity } from 'src/user/entity/user.entity';
-import { UpdateRolesDto } from './dto/roles.update-dto';
+import { AddRoleDto } from './dto/roles.add-dto';
+import { RemoveRoleDto } from './dto/roles.remove-dto';
 
 @Injectable()
 export class AuthorizationService {
@@ -12,7 +12,18 @@ export class AuthorizationService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  async update(data: UpdateRolesDto) {
-    await this.userRepository.update(data.id, omit(data, 'id'));
+  async add({ userId, role }: AddRoleDto) {
+    const user = await this.userRepository.findOneBy({ id: userId });
+    const updatedRoles = [...new Set([...user.roles, role])];
+    await this.userRepository.update(userId, { roles: updatedRoles });
+  }
+
+  async remove({ userId, role }: RemoveRoleDto) {
+    const user = await this.userRepository.findOneBy({ id: userId });
+    const updatedRoles = user.roles.filter((r) => r !== role);
+    if (!updatedRoles.length) {
+      throw new UnprocessableEntityException('At least one role must exist!');
+    }
+    await this.userRepository.update(userId, { roles: updatedRoles });
   }
 }

@@ -35,7 +35,6 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @Roles(Role.Admin)
   @Get('/:id')
   @UseInterceptors(ClassSerializerInterceptor)
   findOne(@Param('id') id: string) {
@@ -55,15 +54,15 @@ export class UserController {
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    if (+id !== req.user?.id) {
-      throw new ForbiddenException();
-    }
-    return this.userService.update(+id, updateUserDto);
+    return this.userService.update(+id, updateUserDto, req);
   }
 
   @Roles(Role.Admin)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Request() req: any, @Param('id') id: string) {
+    if (req?.user?.id === +id) {
+      throw new ForbiddenException('Cannot delete yourself!');
+    }
     return this.userService.remove(+id);
   }
 }
