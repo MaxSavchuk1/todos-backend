@@ -5,7 +5,7 @@ import { UserEntity } from '../user/entity/user.entity';
 import { AuthRefreshTokenService } from './auth-refresh-token.service';
 import Hash from 'src/utils/hash';
 import { Repository } from 'typeorm';
-import { AuthUpdatePasswordDto } from './dto/auth-update-password.dto';
+import { AuthUpdatePasswordDto } from './dto/auth.update-password-dto';
 
 @Injectable()
 export class AuthService {

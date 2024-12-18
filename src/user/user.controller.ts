@@ -20,8 +20,11 @@ import { Throttle } from '@nestjs/throttler';
 import { FindDto } from 'src/utils/find.dto';
 import { Roles } from 'src/authorization/decorators/roles.decorator';
 import { Role } from 'src/authorization/enums/role.enum';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('users')
+@ApiTags('Users')
+@UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -36,14 +39,12 @@ export class UserController {
   }
 
   @Get('/:id')
-  @UseInterceptors(ClassSerializerInterceptor)
   findOne(@Param('id') id: string) {
     return this.userService.findOneById(+id);
   }
 
   @Roles(Role.Admin)
   @Get()
-  @UseInterceptors(ClassSerializerInterceptor)
   findAll(@Query() findDto: FindDto) {
     return this.userService.findAll(findDto);
   }

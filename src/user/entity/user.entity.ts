@@ -14,18 +14,23 @@ import Hash from '../../utils/hash';
 import { TodoEntity } from '../../todo/entity/todo.entity';
 import { AuthRefreshTokenEntity } from 'src/auth/entity/auth-refresh-token.entity';
 import { Role } from 'src/authorization/enums/role.enum';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'users' })
 export class UserEntity {
+  @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty()
   @Column()
   firstName: string;
 
+  @ApiProperty()
   @Column()
   lastName: string;
 
+  @ApiProperty()
   @Column({ unique: true, nullable: false })
   email: string;
 
@@ -59,9 +64,11 @@ export class UserEntity {
   })
   tokens: AuthRefreshTokenEntity[];
 
+  @ApiProperty()
   @Column({ type: 'character varying', array: true, default: [Role.User] })
   roles: Role[];
 
+  @ApiProperty()
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
