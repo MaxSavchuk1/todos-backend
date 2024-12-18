@@ -1,27 +1,27 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Repository } from 'typeorm';
 import { createMock } from '@golevelup/ts-jest';
-import { AuthorizationService } from './authorization.service';
-import { AuthorizationController } from './authorization.controller';
+import { RoleService } from './role.service';
+import { RoleController } from './role.controller';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entity/user.entity';
 
-describe('AuthorizationService', () => {
-  let service: AuthorizationService;
+describe('RoleService', () => {
+  let service: RoleService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        AuthorizationService,
+        RoleService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: createMock<Repository<UserEntity>>(),
         },
       ],
-      controllers: [AuthorizationController],
+      controllers: [RoleController],
     }).compile();
 
-    service = module.get<AuthorizationService>(AuthorizationService);
+    service = module.get<RoleService>(RoleService);
   });
 
   it('should be defined', () => {

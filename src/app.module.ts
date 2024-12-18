@@ -10,8 +10,8 @@ import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import authConfig from './config/auth.config';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
-import { RolesGuard } from './authorization/guards/roles.guard';
-import { AuthorizationModule } from './authorization/authorization.module';
+import { RolesGuard } from './role/guards/roles.guard';
+import { RoleModule } from './role/role.module';
 
 @Module({
   imports: [
@@ -25,7 +25,7 @@ import { AuthorizationModule } from './authorization/authorization.module';
     TodoModule,
     AuthModule,
     UserModule,
-    AuthorizationModule,
+    RoleModule,
   ],
   controllers: [],
   providers: [

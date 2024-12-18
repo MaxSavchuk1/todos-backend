@@ -4,7 +4,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { Role } from 'src/authorization/enums/role.enum';
+import { Role } from 'src/role/enums/role.enum';
 
 export function IsRoleExist(
   property?: string,

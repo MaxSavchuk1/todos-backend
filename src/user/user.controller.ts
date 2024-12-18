@@ -20,8 +20,8 @@ import { UpdateUserDto } from './dto/user.update-dto';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { Throttle } from '@nestjs/throttler';
 import { FindDto } from 'src/utils/find.dto';
-import { Roles } from 'src/authorization/decorators/roles.decorator';
-import { Role } from 'src/authorization/enums/role.enum';
+import { Roles } from 'src/role/decorators/roles.decorator';
+import { Role } from 'src/role/enums/role.enum';
 import {
   ApiBearerAuth,
   ApiBody,

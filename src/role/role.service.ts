@@ -2,11 +2,11 @@ import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from 'src/user/entity/user.entity';
-import { AddRoleDto } from './dto/roles.add-dto';
-import { RemoveRoleDto } from './dto/roles.remove-dto';
+import { AddRoleDto } from './dto/role.add-dto';
+import { RemoveRoleDto } from './dto/role.remove-dto';
 
 @Injectable()
-export class AuthorizationService {
+export class RoleService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,

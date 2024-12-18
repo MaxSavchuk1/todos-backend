@@ -14,8 +14,8 @@ import { TodoService } from './todo.service';
 import { TodoEntity } from './entity/todo.entity';
 import { CreateTodoDto } from './dto/todo.create-dto';
 import { UpdateTodoDto } from './dto/todo.update-dto';
-import { Roles } from 'src/authorization/decorators/roles.decorator';
-import { Role } from 'src/authorization/enums/role.enum';
+import { Roles } from 'src/role/decorators/roles.decorator';
+import { Role } from 'src/role/enums/role.enum';
 import {
   ApiBearerAuth,
   ApiOkResponse,

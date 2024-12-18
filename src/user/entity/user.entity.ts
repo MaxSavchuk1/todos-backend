@@ -13,7 +13,7 @@ import { Exclude } from 'class-transformer';
 import Hash from '../../utils/hash';
 import { TodoEntity } from '../../todo/entity/todo.entity';
 import { AuthRefreshTokenEntity } from 'src/auth/entity/auth-refresh-token.entity';
-import { Role } from 'src/authorization/enums/role.enum';
+import { Role } from 'src/role/enums/role.enum';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'users' })

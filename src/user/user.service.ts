@@ -5,7 +5,7 @@ import { UserEntity } from './entity/user.entity';
 import { CreateUserDto } from './dto/user.create-dto';
 import { UpdateUserDto } from './dto/user.update-dto';
 import { FindDto } from 'src/utils/find.dto';
-import { Role } from 'src/authorization/enums/role.enum';
+import { Role } from 'src/role/enums/role.enum';
 
 @Injectable()
 export class UserService {

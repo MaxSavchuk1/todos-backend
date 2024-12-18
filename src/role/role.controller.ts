@@ -1,15 +1,15 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { AuthorizationService } from './authorization.service';
+import { RoleService } from './role.service';
 import { Roles } from './decorators/roles.decorator';
 import { Role } from './enums/role.enum';
-import { AddRoleDto } from './dto/roles.add-dto';
-import { RemoveRoleDto } from './dto/roles.remove-dto';
+import { AddRoleDto } from './dto/role.add-dto';
+import { RemoveRoleDto } from './dto/role.remove-dto';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 @Controller('role')
 @ApiTags('Roles')
-export class AuthorizationController {
-  constructor(private authorizationService: AuthorizationService) {}
+export class RoleController {
+  constructor(private authorizationService: RoleService) {}
 
   @Roles(Role.Admin)
   @Post('add')
