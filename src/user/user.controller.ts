@@ -5,6 +5,8 @@ import {
   Delete,
   ForbiddenException,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -20,7 +22,14 @@ import { Throttle } from '@nestjs/throttler';
 import { FindDto } from 'src/utils/find.dto';
 import { Roles } from 'src/authorization/decorators/roles.decorator';
 import { Role } from 'src/authorization/enums/role.enum';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOkResponse,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
+import { UserEntity } from './entity/user.entity';
 
 @Controller('users')
 @ApiTags('Users')
@@ -33,23 +42,37 @@ export class UserController {
     long: { limit: 5, ttl: 60000 },
   })
   @Public()
+  @ApiBody({ type: CreateUserDto })
   @Post('/create')
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
   @Get('/:id')
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    type: UserEntity,
+  })
   findOne(@Param('id') id: string) {
     return this.userService.findOneById(+id);
   }
 
   @Roles(Role.Admin)
   @Get()
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    type: UserEntity,
+    isArray: true,
+  })
+  @ApiQuery({ name: 'limit', type: Number, required: true })
+  @ApiQuery({ name: 'offset', type: Number, required: true })
   findAll(@Query() findDto: FindDto) {
     return this.userService.findAll(findDto);
   }
 
   @Patch(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth()
   update(
     @Request() req: any,
     @Param('id') id: string,
@@ -60,6 +83,8 @@ export class UserController {
 
   @Roles(Role.Admin)
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth()
   remove(@Request() req: any, @Param('id') id: string) {
     if (req?.user?.id === +id) {
       throw new ForbiddenException('Cannot delete yourself!');

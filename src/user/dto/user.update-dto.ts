@@ -1,19 +1,23 @@
 import { Transform } from 'class-transformer';
 import { IsEmail, IsOptional, Validate } from 'class-validator';
 import { IsNotExist } from '../../utils/validators/is-not-exists.validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateUserDto {
+  @ApiPropertyOptional()
   @IsOptional()
-  firstName: string;
+  readonly firstName: string;
 
+  @ApiPropertyOptional()
   @IsOptional()
-  lastName: string;
+  readonly lastName: string;
 
+  @ApiPropertyOptional({ example: 'user@example.com' })
   @Transform(({ value }) => value?.toLowerCase().trim())
   @IsOptional()
   @Validate(IsNotExist, ['UserEntity'], {
     message: 'The email is already exists',
   })
   @IsEmail()
-  email: string;
+  readonly email: string;
 }
