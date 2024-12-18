@@ -1,20 +1,24 @@
 import { IsArray, IsOptional, IsString } from 'class-validator';
-import { CreateTodoDto } from './todo.create-dto';
 import { TodoEntity, TodoStatus } from '../entity/todo.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
-export class UpdateTodoDto extends CreateTodoDto {
+export class UpdateTodoDto {
+  @ApiProperty()
   @IsOptional()
   @IsString()
   readonly title: string;
 
+  @ApiProperty()
   @IsOptional()
   @IsString()
   readonly body: string;
 
+  @ApiProperty()
   @IsOptional()
   @IsString()
   readonly status: TodoStatus;
 
+  @ApiProperty()
   @IsOptional()
   @IsArray()
   readonly children: Array<number | TodoEntity>;

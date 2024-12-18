@@ -7,6 +7,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { UserEntity } from '../../user/entity/user.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 export enum TodoStatus {
   NEW = 'new',
@@ -17,27 +18,34 @@ export enum TodoStatus {
 
 @Entity({ name: 'todos' })
 export class TodoEntity {
+  @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty()
   @Column()
   title: string;
 
+  @ApiProperty()
   @Column({ nullable: true })
   body: string;
 
+  @ApiProperty()
   @Column({ default: TodoStatus.NEW })
   status: TodoStatus;
 
+  @ApiProperty()
   @Column({ type: 'integer', array: true, default: [] })
-  children: number[] | TodoEntity[];
+  children: Array<number | TodoEntity>;
 
+  @ApiProperty()
   @Column({ nullable: true })
   parentId: number;
 
   @ManyToOne(() => UserEntity, (user) => user.todos, { onDelete: 'CASCADE' })
   user: UserEntity;
 
+  @ApiProperty()
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
