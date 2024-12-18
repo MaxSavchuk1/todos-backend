@@ -4,9 +4,10 @@ import { Roles } from './decorators/roles.decorator';
 import { Role } from './enums/role.enum';
 import { AddRoleDto } from './dto/roles.add-dto';
 import { RemoveRoleDto } from './dto/roles.remove-dto';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 @Controller('role')
+@ApiTags('Roles')
 export class AuthorizationController {
   constructor(private authorizationService: AuthorizationService) {}
 
