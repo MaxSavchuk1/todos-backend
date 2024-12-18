@@ -4,11 +4,21 @@ import { ValidationPipe } from '@nestjs/common';
 import { useContainer } from 'class-validator';
 import validationOptions from './utils/validation-options';
 import { AppModule } from './app.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: true,
   });
+
+  const config = new DocumentBuilder()
+    .addBearerAuth()
+    .setTitle('Todos')
+    .setDescription('Todos api')
+    .setVersion('0.1')
+    .build();
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, documentFactory);
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 

@@ -13,14 +13,25 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtRefreshAuthGuard } from './guards/jwt-refresh-auth.guard';
 import { AuthRefreshTokenService } from './auth-refresh-token.service';
-import { AuthUpdatePasswordDto } from './dto/auth-update-password.dto';
+import { AuthUpdatePasswordDto } from './dto/auth.update-password-dto';
+import { AuthLoginDto } from 'src/auth/dto/auth.login-dto';
+import { AuthLoginResponseDto } from './dto/auth.login-response-dto';
+import { UserEntity } from 'src/user/entity/user.entity';
 
 @Controller('auth')
+@ApiTags('Auth')
+@UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {
   constructor(
     private authenticationService: AuthService,
@@ -35,12 +46,19 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @ApiBody({ type: AuthLoginDto })
+  @ApiOkResponse({
+    type: AuthLoginResponseDto,
+  })
   async login(@Request() req: any) {
     return await this.authenticationService.login(req.user);
   }
 
   @Get('me')
-  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    type: UserEntity,
+  })
   async me(@Request() req: any) {
     return await this.authenticationService.me(req.user);
   }
@@ -52,6 +70,10 @@ export class AuthController {
   @Public()
   @UseGuards(JwtRefreshAuthGuard)
   @Post('refresh-tokens')
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    type: AuthLoginResponseDto,
+  })
   refreshTokens(@Request() req: any) {
     if (!req.user) {
       throw new InternalServerErrorException();
@@ -64,7 +86,8 @@ export class AuthController {
   }
 
   @Put('password')
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBody({ type: AuthUpdatePasswordDto })
   updatePassword(
     @Request() req,
     @Body() authUpdatePasswordDto: AuthUpdatePasswordDto,
