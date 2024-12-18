@@ -17,7 +17,7 @@ export class CheckAdminCount implements ValidatorConstraintInterface {
   ) {}
 
   async validate(value: string, validationArguments: ValidationArguments) {
-    if (value === Role.Admin) {
+    if (value === Role.USER_MANAGER) {
       const repository = validationArguments.constraints[0];
       const adminCount: number = await this.dataSource
         .getRepository(repository)

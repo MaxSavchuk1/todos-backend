@@ -65,7 +65,7 @@ export class UserEntity {
   tokens: AuthRefreshTokenEntity[];
 
   @ApiProperty()
-  @Column({ type: 'character varying', array: true, default: [Role.User] })
+  @Column({ type: 'character varying', array: true, default: [Role.APP_USER] })
   roles: Role[];
 
   @ApiProperty()

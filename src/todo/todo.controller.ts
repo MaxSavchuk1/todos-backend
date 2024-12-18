@@ -26,7 +26,7 @@ import {
 @Controller('todos')
 @ApiTags('Todos')
 @ApiBearerAuth()
-@Roles(Role.User)
+@Roles(Role.APP_USER)
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 

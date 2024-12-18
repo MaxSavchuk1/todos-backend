@@ -49,9 +49,10 @@ export class UserService {
   }
 
   async update(id: number, data: UpdateUserDto, req: any) {
-    if (req.user?.id !== id && !req.user?.roles.includes(Role.Admin)) {
+    if (req.user?.id !== id && !req.user?.roles.includes(Role.USER_MANAGER)) {
       throw new ForbiddenException('Only admins can update other users');
     }
+    // TODO: check if admin or user manager
     await this.userRepository.update(id, data);
   }
 

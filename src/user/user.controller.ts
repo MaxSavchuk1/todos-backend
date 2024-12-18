@@ -57,7 +57,7 @@ export class UserController {
     return this.userService.findOneById(+id);
   }
 
-  @Roles(Role.Admin)
+  @Roles(Role.USER_MANAGER)
   @Get()
   @ApiBearerAuth()
   @ApiOkResponse({
@@ -81,7 +81,7 @@ export class UserController {
     return this.userService.update(+id, updateUserDto, req);
   }
 
-  @Roles(Role.Admin)
+  @Roles(Role.USER_MANAGER)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiBearerAuth()
