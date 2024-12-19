@@ -20,13 +20,16 @@ export class UserService {
     await this.userRepository.save(user);
   }
 
+  async me({ id }): Promise<UserEntity | null> {
+    return await this.userRepository.findOneBy({ id });
+  }
+
   async findOneById(id: number): Promise<UserEntity | null> {
-    return await this.userRepository.findOne({
-      where: { id },
-      // relations: {
-      //   todos: true,
-      // },
-    });
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.todos', 'todo', 'todo.parentId IS NULL')
+      .where('user.id = :id', { id })
+      .getOne();
   }
 
   async findOneByEmail(email: string): Promise<UserEntity | null> {
@@ -48,15 +51,34 @@ export class UserService {
     };
   }
 
-  async update(id: number, data: UpdateUserDto, req: any) {
-    if (req.user?.id !== id && !req.user?.roles.includes(Role.USER_MANAGER)) {
-      throw new ForbiddenException('Only admins can update other users');
+  async update(id: number, data: UpdateUserDto, currentUser: UserEntity) {
+    if (
+      currentUser.id !== id &&
+      !(
+        currentUser.roles.includes(Role.USER_MANAGER) ||
+        currentUser.roles.includes(Role.ADMIN)
+      )
+    ) {
+      throw new ForbiddenException(
+        'Only admins and user managers can update other users',
+      );
     }
-    // TODO: check if admin or user manager
+
     await this.userRepository.update(id, data);
   }
 
-  async remove(id: number) {
+  async remove(id: number, currentUser: UserEntity) {
+    if (currentUser.id === id) {
+      throw new ForbiddenException('Cannot delete yourself!');
+    }
+    const user = await this.userRepository.findOneBy({ id });
+    if (
+      user.roles.includes(Role.ADMIN) &&
+      !currentUser.roles.includes(Role.ADMIN)
+    ) {
+      throw new ForbiddenException('Only admins can delete admins!');
+    }
+
     return await this.userRepository.delete(id);
   }
 }

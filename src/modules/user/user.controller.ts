@@ -3,7 +3,6 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Delete,
-  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
@@ -17,7 +16,6 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/user.create-dto';
 import { UpdateUserDto } from './dto/user.update-dto';
-import { Public } from 'src/modules/auth/decorators/public.decorator';
 import { Throttle } from '@nestjs/throttler';
 import { FindDto } from 'src/utils/find.dto';
 import { Roles } from 'src/modules/role/decorators/roles.decorator';
@@ -41,13 +39,23 @@ export class UserController {
     short: { limit: 1, ttl: 1000 },
     long: { limit: 5, ttl: 60000 },
   })
-  @Public()
+  @Roles(Role.USER_MANAGER)
   @ApiBody({ type: CreateUserDto })
   @Post('/create')
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
+  @Get('me')
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    type: UserEntity,
+  })
+  async me(@Request() req: any) {
+    return await this.userService.me(req.user);
+  }
+
+  @Roles(Role.USER_MANAGER)
   @Get('/:id')
   @ApiBearerAuth()
   @ApiOkResponse({
@@ -78,7 +86,8 @@ export class UserController {
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.userService.update(+id, updateUserDto, req);
+    const currentUser = req.user as UserEntity;
+    return this.userService.update(+id, updateUserDto, currentUser);
   }
 
   @Roles(Role.USER_MANAGER)
@@ -86,9 +95,7 @@ export class UserController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiBearerAuth()
   remove(@Request() req: any, @Param('id') id: string) {
-    if (req?.user?.id === +id) {
-      throw new ForbiddenException('Cannot delete yourself!');
-    }
-    return this.userService.remove(+id);
+    const currentUser = req.user as UserEntity;
+    return this.userService.remove(+id, currentUser);
   }
 }
