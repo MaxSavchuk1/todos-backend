@@ -26,10 +26,10 @@ import {
 @Controller('todos')
 @ApiTags('Todos')
 @ApiBearerAuth()
-@Roles(Role.APP_USER)
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
+  @Roles(Role.APP_USER)
   @Get()
   @ApiOperation({
     summary: "Get root todos that don't have parent todo",
@@ -43,11 +43,7 @@ export class TodoController {
     return this.todoService.findRootTodos(userId);
   }
 
-  // @Get('/all')
-  // findAllTodos(): Promise<TodoEntity[]> {
-  //   return this.todoService.findAll();
-  // }
-
+  @Roles(Role.APP_USER, Role.USER_MANAGER)
   @Get('/:todoId')
   @ApiOkResponse({
     type: TodoEntity,
@@ -56,6 +52,7 @@ export class TodoController {
     return this.todoService.findTodoByIdWithChildren(todoId);
   }
 
+  @Roles(Role.APP_USER)
   @Post('/create')
   createTodo(
     @Body() data: CreateTodoDto,
@@ -65,6 +62,7 @@ export class TodoController {
     return this.todoService.createTodo(data, userId);
   }
 
+  @Roles(Role.APP_USER)
   @Patch('/:todoId')
   @HttpCode(HttpStatus.NO_CONTENT)
   updateTodo(
@@ -76,6 +74,7 @@ export class TodoController {
     return this.todoService.updateTodo(todoId, userId, data);
   }
 
+  @Roles(Role.APP_USER)
   @Delete('/:todoId')
   @HttpCode(HttpStatus.NO_CONTENT)
   removeTodo(
