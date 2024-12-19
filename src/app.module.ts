@@ -3,15 +3,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
+import appConfig from './config/app.config';
+import databaseConfig from './config/database.config';
+import authConfig from './config/auth.config';
+import { DbInitializationModule } from './modules/db-initialization/db-initialization.module';
+import { ProjectModule } from './modules/project/project.module';
+import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { TodoModule } from './modules/todo/todo.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { RoleModule } from './modules/role/role.module';
-import { DbInitializationModule } from './modules/db-initialization/db-initialization.module';
-import appConfig from './config/app.config';
-import databaseConfig from './config/database.config';
-import authConfig from './config/auth.config';
-import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/role/guards/roles.guard';
 
 @Module({
@@ -28,6 +29,7 @@ import { RolesGuard } from './modules/role/guards/roles.guard';
     UserModule,
     RoleModule,
     DbInitializationModule,
+    ProjectModule,
   ],
   controllers: [],
   providers: [
