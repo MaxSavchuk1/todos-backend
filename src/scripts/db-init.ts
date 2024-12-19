@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
-import { DbInitializationService } from '../db-initialization/db-initialization.service';
+import { DbInitializationService } from '../modules/db-initialization/db-initialization.service';
 
 async function bootstrap() {
   const application = await NestFactory.createApplicationContext(AppModule);
