@@ -1,3 +1,4 @@
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_GUARD } from '@nestjs/core';
@@ -24,6 +25,18 @@ import { RolesGuard } from './modules/role/guards/roles.guard';
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
     }),
+    ThrottlerModule.forRoot([
+      {
+        name: 'short',
+        ttl: 1000,
+        limit: 50,
+      },
+      {
+        name: 'long',
+        ttl: 60000,
+        limit: 1000,
+      },
+    ]),
     TodoModule,
     AuthModule,
     UserModule,
@@ -40,6 +53,10 @@ import { RolesGuard } from './modules/role/guards/roles.guard';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
   ],
 })
