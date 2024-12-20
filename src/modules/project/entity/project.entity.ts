@@ -2,11 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
+import { UserEntity } from 'src/modules/user/entity/user.entity';
 
 @Entity({ name: 'projects' })
 export class ProjectEntity {
@@ -15,14 +17,23 @@ export class ProjectEntity {
   id: number;
 
   @ApiProperty()
-  @Column({ nullable: false })
+  @Column({ type: 'varchar', nullable: false })
   projectName: string;
 
   @ApiProperty()
-  @Column()
+  @Column({ type: 'varchar', nullable: true })
   projectDescription: string;
 
-  //project manager
+  @ApiProperty()
+  @Column({ type: 'integer', nullable: false })
+  projectManager: number;
+
+  @ApiProperty()
+  @Column({ type: 'integer', array: true, default: [] })
+  assignedUsers: number[];
+
+  @ManyToMany(() => UserEntity, (user) => user.userProjects)
+  assignedUsersRelation: UserEntity[];
 
   @ApiProperty()
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })

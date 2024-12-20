@@ -5,6 +5,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -15,6 +17,7 @@ import { TodoEntity } from '../../todo/entity/todo.entity';
 import { AuthRefreshTokenEntity } from 'src/modules/auth/entity/auth-refresh-token.entity';
 import { Role } from 'src/modules/role/enums/role.enum';
 import { ApiProperty } from '@nestjs/swagger';
+import { ProjectEntity } from 'src/modules/project/entity/project.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -67,6 +70,20 @@ export class UserEntity {
   @ApiProperty()
   @Column({ type: 'character varying', array: true, default: [Role.APP_USER] })
   roles: Role[];
+
+  @ManyToMany(() => ProjectEntity, (project) => project.assignedUsers)
+  @JoinTable({
+    name: 'users_projects',
+    joinColumn: {
+      name: 'users_projects',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'projects_assignedUsers',
+      referencedColumnName: 'id',
+    },
+  })
+  userProjects: ProjectEntity[];
 
   @ApiProperty()
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
